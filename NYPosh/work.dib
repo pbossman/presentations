@@ -1,0 +1,1295 @@
+#!markdown
+
+# Making sense of Functions
+
+#!markdown
+
+Functions are set of statements organized to perform an specific task
+
+#!markdown
+
+## Function: format and naming
+
+#!markdown
+
+Different languages have different formats, but the concepts are the same
+
+VBScript
+> ```vbscript
+> Function Functionname (parameter-list)
+>     statement 1
+>     statement 2
+>     statement 3
+>     .......
+>     statement n
+> End Function
+> ```
+> 
+Batch
+> ```text
+> :function_name 
+> Do_something 
+> EXIT /B 0
+> ```
+>
+Python
+> ```python
+> def function_name(parameters):
+>	"""docstring"""
+>	statement(s)
+> 
+> ```
+
+PowerShell
+> ``` powershell
+> function [<scope:>]<FunctionName> [([type]$parameter1[, [type]$parameter2])] {
+>   [CmdletBinding()] 
+>   param([type]$parameter1 [, [type]$parameter2])
+>   dynamicparam { <statement list> }
+>   begin { <statement list> }
+>   process { <statement list> }
+>   end { <statement list> }
+> }
+> ```
+
+A function can be as complex as a cmdlet or an application program.
+
+- Like cmdlets, functions can have parameters. 
+- The parameters can be named, positional, switch, or dynamic parameters.
+- Function parameters can be read from the command line or from the pipeline.
+
+#!markdown
+
+### PowerShell ISE snippets
+
+#!markdown
+
+#### Simple function `Ctrl-J`
+
+#!pwsh
+
+function MyFunction ($param1, $param2)
+{
+    
+}
+
+#!markdown
+
+#### ISE Cmdlet Advanced Function `Ctrl-J`
+
+#!pwsh
+
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+function Verb-Noun
+{
+    [CmdletBinding()]
+    [Alias()]
+    [OutputType([int])]
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        $Param1,
+
+        # Param2 help description
+        [int]
+        $Param2
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+    }
+    End
+    {
+    }
+}
+
+#!markdown
+
+#### ISE Advanced Function - Complete `Ctrl-J`
+
+#!pwsh
+
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+.INPUTS
+   Inputs to this cmdlet (if any)
+.OUTPUTS
+   Output from this cmdlet (if any)
+.NOTES
+   General notes
+.COMPONENT
+   The component this cmdlet belongs to
+.ROLE
+   The role this cmdlet belongs to
+.FUNCTIONALITY
+   The functionality that best describes this cmdlet
+#>
+function Verb-Noun
+{
+    [CmdletBinding(DefaultParameterSetName='Parameter Set 1', 
+                  SupportsShouldProcess=$true, 
+                  PositionalBinding=$false,
+                  HelpUri = 'http://www.microsoft.com/',
+                  ConfirmImpact='Medium')]
+    [Alias()]
+    [OutputType([String])]
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=0,
+                   ParameterSetName='Parameter Set 1')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [ValidateCount(0,5)]
+        [ValidateSet("sun", "moon", "earth")]
+        [Alias("p1")] 
+        $Param1,
+
+        # Param2 help description
+        [Parameter(ParameterSetName='Parameter Set 1')]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [ValidateScript({$true})]
+        [ValidateRange(0,5)]
+        [int]
+        $Param2,
+
+        # Param3 help description
+        [Parameter(ParameterSetName='Another Parameter Set')]
+        [ValidatePattern("[a-z]*")]
+        [ValidateLength(0,15)]
+        [String]
+        $Param3
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+        if ($pscmdlet.ShouldProcess("Target", "Operation"))
+        {
+        }
+    }
+    End
+    {
+    }
+}
+
+#!markdown
+
+### VSCode Snippets Articles
+
+#!markdown
+
+> [VS Code Snippets: Speed up Coding with Shortcuts](https://adamtheautomator.com/vs-code-snippets/) by Shane O'Neill
+>
+> [Adding PowerShell Snippets to Visual Studio Code](https://jdhitsolutions.com/blog/scripting/5488/adding-powershell-snippets-to-visual-studio-code/) by Jeff Hicks
+
+#!markdown
+
+#### VSCode Simple Function `func`
+
+#!pwsh
+
+function FunctionName {
+    param (
+        OptionalParameters
+    )
+    
+}
+
+#!markdown
+
+#### VSCode Advanced Function `funcadv`
+
+#!pwsh
+
+function Verb-Noun {
+    [CmdletBinding()]
+    param (
+        
+    )
+    
+    begin {
+        
+    }
+    
+    process {
+        
+    }
+    
+    end {
+        
+    }
+}
+
+#!markdown
+
+### Function Names
+
+#!markdown
+
+Functions should use the `Verb-Noun` naming structure, for read ability.  
+
+- **Keep things PowerShell-y**
+
+#!pwsh
+
+Get-Verb
+
+#!markdown
+
+---
+
+#!markdown
+
+## Simple Sample Function
+
+#!markdown
+
+```powershell
+function Get-ExplorerProcess { 
+  Get-Process explorer
+}
+
+function Get-CurrentItem { 
+  Get-item .
+}
+```
+
+#!pwsh
+
+function Get-ExplorerProcess { 
+  Get-Process explorer
+}
+Get-ExplorerProcess
+
+#!pwsh
+
+function Get-CurrentItem { 
+  Get-item .
+}
+Get-CurrentItem
+
+#!pwsh
+
+function Get-Stuff { 
+  Get-ExplorerProcess
+  Get-CurrentItem
+}
+Get-Stuff
+
+#!markdown
+
+> **Think about what you output or return**
+> 
+> *~ more to come*
+
+#!markdown
+
+**PowerShell Format**
+> ``` powershell
+> function [<scope:>]<FunctionName> [([type]$parameter1[, [type]$parameter2])] {
+>   [CmdletBinding()]
+>   param([type]$parameter1 [, [type]$parameter2])
+>   dynamicparam { <statement list> }
+>   begin { <statement list> }
+>   process { <statement list> }
+>   end { <statement list> }
+> }
+> ```
+
+#!markdown
+
+### Simple function with parameters
+
+#!markdown
+
+> Parameters allow you to extend a function and accept variable input
+
+#!pwsh
+
+function Get-myProcess ($name) {
+  Get-Process $name
+}
+
+#!markdown
+
+> Run function with parameter
+
+#!pwsh
+
+Get-myProcess Code
+
+#!markdown
+
+> Run function thats looks like VBScript/Python/Perl 👎
+
+#!pwsh
+
+Get-myProcess("Code")
+
+#!markdown
+
+> Run function without parameter
+
+#!pwsh
+
+Get-myProcess
+
+#!markdown
+
+### Simple function with default parameters
+
+If a values is not given for a pararmwemter a value can be used by default
+
+#!pwsh
+
+function Get-myProcess ($name = 'explorer') {
+  Get-Process $name
+}
+
+#!markdown
+
+Setting the `$name` variable to a default value
+
+> if the function is called without a value
+
+#!pwsh
+
+Get-myProcess
+
+#!markdown
+
+> the function still works when a value is used
+
+#!pwsh
+
+Get-myProcess Code
+
+#!markdown
+
+---
+
+#!markdown
+
+## Parameter Names
+
+#!markdown
+
+> Parameter names are created for each variable name  
+>
+```powershell 
+function Get-myProcess ($name = 'explorer') {
+  Get-Process $name
+}
+```
+Paramater `Name` is can be used
+
+#!pwsh
+
+Get-myProcess -name explorer
+
+#!markdown
+
+## Pipeline input
+
+#!markdown
+
+functions take input from the pipeline
+
+#!pwsh
+
+'apple','code','dog' | Get-myProcess
+
+#!pwsh
+
+Get-myProcess 'explorer','code' 
+
+#!markdown
+
+## Make your functions do more the "PowerShell Way"
+
+#!markdown
+
+## The `dynamicparam` block
+
+#!markdown
+
+**PowerShell Format**
+> ``` powershell
+> function [<scope:>]<FunctionName> [([type]$parameter1[, [type]$parameter2])] {
+>   [CmdletBinding()] 
+>   param([type]$parameter1 [, [type]$parameter2])
+>   dynamicparam { <statement list> }
+>   begin { <statement list> }
+>   process { <statement list> }
+>   end { <statement list> }
+> }
+> ```
+
+#!markdown
+
+Dynamic parameters are parameters that are only available under certain conditions.
+
+- Use only when necessary as this can be very difficult for discoverability
+  
+ [PowerShell Docs](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters?view=powershell-5.1)
+
+#!pwsh
+
+Function Get-Sample {
+  [CmdletBinding()]
+  Param([string]$Name, [string]$Path)
+
+  DynamicParam
+  {
+    if ($Path.StartsWith("HKLM:"))
+    {
+      $parameterAttribute = [System.Management.Automation.ParameterAttribute]@{
+          ParameterSetName = "ByRegistryPath"
+          Mandatory = $false
+      }
+
+      $attributeCollection = [System.Collections.ObjectModel.Collection[System.Attribute]]::new()
+      $attributeCollection.Add($parameterAttribute)
+
+      $dynParam1 = [System.Management.Automation.RuntimeDefinedParameter]::new(
+        'KeyCount', [Int32], $attributeCollection
+      )
+
+      $paramDictionary = [System.Management.Automation.RuntimeDefinedParameterDictionary]::new()
+      $paramDictionary.Add('KeyCount', $dynParam1)
+      return $paramDictionary
+    }
+  }
+}
+
+#!pwsh
+
+Get-Sample -Path C:\Support -
+
+#!markdown
+
+> See Argument Completers - `Register-ArgumentCompleter`
+
+#!markdown
+
+## "The Work" - `BEGIN`, `PROCESS`, `END`
+
+#!markdown
+
+**PowerShell Format**
+> ``` powershell
+> function [<scope:>]<FunctionName> [([type]$parameter1[, [type]$parameter2])] {
+>   [CmdletBinding()]
+>   param([type]$parameter1 [, [type]$parameter2])
+>   dynamicparam { <statement list> }
+>   begin { <statement list> }
+>   process { <statement list> }
+>   end { <statement list> }
+> }
+> ```
+
+#!markdown
+
+```powershell
+function Get-ProcessFunction {
+    param(
+        [String[]] $ProcName
+    )
+    
+    begin {
+        ## runs once
+        ## before the first item in Pipeline
+    }
+    
+    process {
+        ## run once 
+        ## or
+        ## runs for each item in the pipeline
+        ## current item is $_ or $PSItem
+    }
+    
+    end {
+        ## runs after all items have been processed
+        ## the pipeline is empty
+    }
+}
+```
+
+#!pwsh
+
+function Get-ProcessFunction {
+    param(
+        [String[]] $ParamValue
+    )
+    
+    begin {
+        Write-Host -ForegroundColor Yellow "BEGIN BLOCK"
+    }
+    
+    process {
+        Write-Host -ForegroundColor Green "PROCESS BLOCK"
+        Write-Host -ForegroundColor Green "Pipeline Value `$PSItem or `$_ [$_]  - `$ParamValue [$ParamValue]"
+
+    }
+    
+    end {
+        Write-Host -ForegroundColor Cyan "END BLOCK"
+    }
+}
+
+#!pwsh
+
+Get-ProcessFunction 
+
+#!pwsh
+
+Get-ProcessFunction -ParamValue "Something"
+
+#!pwsh
+
+"Something","SomethingElse","WhoKnowsWhat" | Get-ProcessFunction
+
+#!markdown
+
+> Lets update the parameter so it can accept pipeline input
+
+#!pwsh
+
+function Get-ProcessFunction {
+    param(
+        [parameter(ValueFromPipeline)]
+        [String[]] $ParamValue
+    )
+    
+    begin {
+        Write-Host -ForegroundColor Yellow "BEGIN BLOCK"
+    }
+    
+    process {
+        Write-Host -ForegroundColor Green "PROCESS BLOCK"
+        Write-Host -ForegroundColor Green "Pipeline Value `$PSItem or `$_ [$PSItem]  - `$ParamValue [$ParamValue]"
+
+    }
+    
+    end {
+        Write-Host -ForegroundColor Cyan "END BLOCK"
+    }
+}
+
+#!pwsh
+
+"Something","SomethingElse","WhoKnowsWhat" | Get-ProcessFunction 
+
+#!pwsh
+
+Get-ProcessFunction "Something","SomethingElse","WhoKnowsWhat"
+
+#!markdown
+
+> Lets update the process block to accept collections input
+
+#!pwsh
+
+function Get-ProcessFunction {
+    param(
+        [parameter(ValueFromPipeline)]
+        [String[]] $ParamValue
+    )
+    
+    begin {
+        Write-Host -ForegroundColor Yellow "BEGIN BLOCK"
+    }
+    
+    process {
+        Write-Host -ForegroundColor Green "PROCESS BLOCK"
+        foreach ($value in $ParamValue) {
+            Write-Host -ForegroundColor Green "Pipeline Value `$PSItem or `$_ [$_]  - `$ParamValue [$value]"
+        }
+    }
+    
+    end {
+        Write-Host -ForegroundColor Cyan "END BLOCK"
+    }
+}
+
+#!pwsh
+
+Get-ProcessFunction "Something","SomethingElse","WhoKnowsWhat"
+
+#!markdown
+
+## Adding `CmdletBinding`
+
+#!markdown
+
+**PowerShell Format**
+> ``` powershell
+> function [<scope:>]<FunctionName> [([type]$parameter1[, [type]$parameter2])] {
+>   [CmdletBinding()]
+>   param([type]$parameter1 [, [type]$parameter2])
+>   dynamicparam { <statement list> }
+>   begin { <statement list> }
+>   process { <statement list> }
+>   end { <statement list> }
+> }
+> ```
+
+#!markdown
+
+> CmdletBinding makes a function work like a compiled cmdlet
+>
+> This adds parameters to help make your function better
+> - Verbose
+> - Debug
+> - WhatIf
+> - Confirm
+> - ErrorAction
+> - ErrorVariable
+> - OutVariable
+> - OutBuffer
+> - PipelineVariable
+> - WarningAction
+> - WarningVariable
+> - InformationAction
+> - InformationVariable
+
+
+```powershell
+ [CmdletBinding(ConfirmImpact=<String>,
+    DefaultParameterSetName=<String>,
+    HelpURI=<URI>,
+    SupportsPaging=<Boolean>,
+    SupportsShouldProcess=<Boolean>,
+    PositionalBinding=<Boolean>)]
+```
+
+#!pwsh
+
+function Get-Files_w_CmdletBinding {
+    [CmdletBinding()]
+    param(
+        [String[]] $Path = '.'
+    )
+    
+    process {
+        foreach ($file in (Get-ChildItem -Path $path -Filter "*")){
+            $file
+            Write-Verbose "Size => $($file.length)"
+        }
+    }
+}
+
+#!pwsh
+
+Get-Files_w_CmdletBinding 
+
+#!pwsh
+
+Get-Files_w_CmdletBinding -Verbose
+
+#!markdown
+
+### Adding support for `SupportsShouldProcess`
+
+#!pwsh
+
+function Test-ShouldProcess {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+
+    $file = Get-ChildItem './*.txt'
+    if($PSCmdlet.ShouldProcess($file.Name,"Delete")){
+        $file.Delete()
+    }
+}
+
+#!pwsh
+
+Test-ShouldProcess -WhatIf
+
+#!pwsh
+
+Test-ShouldProcess 
+
+#!pwsh
+
+# recreate sample.txt
+$null = New-item .\sample.txt 
+
+#!markdown
+
+### Adding support for `ConfirmImpact`
+
+#!pwsh
+
+function Test-ShouldProcess_needs_Confrim {
+    [CmdletBinding(SupportsShouldProcess,
+            ConfirmImpact='High')]
+    param()
+
+    $file = Get-ChildItem './*.txt'
+    if($PSCmdlet.ShouldProcess($file.Name,"Delete")){
+        $file.Delete()
+    }
+}
+
+#!pwsh
+
+Test-ShouldProcess_needs_Confrim 
+
+#!pwsh
+
+Test-ShouldProcess_needs_Confrim -Confirm:$false
+
+#!pwsh
+
+# recreate sample.txt
+$null = New-item .\sample.txt 
+
+#!markdown
+
+## The `param` block
+
+#!markdown
+
+**PowerShell Format**
+> ``` powershell
+> function [<scope:>]<FunctionName> [([type]$parameter1[, [type]$parameter2])] {
+>   param([type]$parameter1 [, [type]$parameter2])
+>   dynamicparam { <statement list> }
+>   begin { <statement list> }
+>   process { <statement list> }
+>   end { <statement list> }
+> }
+> ```
+This is where a lot of magic happens
+- validation
+- assignment
+- argument completion
+- discoverability
+
+#!pwsh
+
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true,
+                   Position=0, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   HelpMessage="This parameter is needed",
+                   ParameterSetName='Parameter Set 1')]
+        [Alias("p1")]
+        [SupportsWildcards()]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [AllowEmptyString()]
+        [ValidateCount(0,5)]
+        [ValidateSet("sun", "moon", "earth")]
+        [string] $Param1,
+        
+        [Parameter(ParameterSetName='Parameter Set 2')]
+        [Alias("p2")]
+        [int[]] $Param2
+    )
+
+#!markdown
+
+## Parameter Deep Dive
+
+#!markdown
+
+#### Argument `Mandatory`
+
+#!pwsh
+
+function Get-MyService {
+    param (
+        [Parameter(Mandatory=$true)]
+        [String] $Name,
+        [Parameter(Mandatory)]
+        [String] $Status
+    )
+    
+    Process{
+        Get-Service -Name $name | Where-Object Status -eq $Status
+    }
+}
+
+#!pwsh
+
+Get-MyService Workstation 
+
+#!pwsh
+
+Get-MyService Workstation Running
+
+#!markdown
+
+#### Argument `Position`
+
+#!pwsh
+
+function Get-MyService {
+    param (
+        [Parameter(Position=0)]
+        [String] $Name,
+        [Parameter(Position=1)]
+        [String] $Status
+    )
+    
+    Process{
+        Get-Service -Name $name | Where-Object Status -eq $Status
+    }
+}
+
+#!pwsh
+
+Get-MyService -Status Running -name Workstation
+
+#!pwsh
+
+Get-MyService Workstation Running
+
+#!markdown
+
+#### Argument `HelpMessage` & `ValueFromPipeline`
+
+#!pwsh
+
+function Get-MyService {
+    param (
+        [Parameter(Mandatory,
+            Position = 0,
+            HelpMessage='Enter a ServiceName',
+            ValueFromPipeline=$true)]
+        [String] $Name,
+        [Parameter(Position = 1)]
+        [ValidateSet('Running','Stopped','JAson')]
+        [String] $Status = 'Running'
+    )
+    
+    Process {
+        Get-Service -Name $name | Where-Object Status -eq $Status
+    }
+}
+
+#!pwsh
+
+Get-MyService
+
+#!markdown
+
+#### Attribute `ValidateSet`
+
+#!pwsh
+
+function Get-MyService {
+    param (
+        [Parameter(Mandatory,
+            Position = 0,
+            HelpMessage='Enter a ServiceName',
+            ValueFromPipeline=$true)]
+        [String] $Name,
+        [Parameter(Position = 1)]
+        [ValidateSet('Running','Stopped','JAson')]
+        [String] $Status = 'Running'
+    )
+    
+    Process {
+        Get-Service -Name $name | Where-Object Status -eq $Status
+    }
+}
+
+#!pwsh
+
+Get-MyService bits -Status Stopped
+
+#!markdown
+
+> Default value allows for some parameters to be pre-defineed
+
+#!pwsh
+
+'bits', 'WinMgmt', 'WinRM' | Get-MyService 
+
+#!markdown
+
+> Tab-completion is possible with a `Validateset` 
+
+#!pwsh
+
+'bits', 'WinMgmt', 'WinRM' | Get-MyService -Status 
+
+#!markdown
+
+#### .... and so much more
+
+#!markdown
+
+```powershell
+Get-Help about_Functions_Advanced_Parameters
+```
+Microsoft Docs : [about_Functions_Advanced_Parameters](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters?view=powershell-5.1)
+
+```powershell
+Function Test-SoMuchMore {
+    [Cmdletbinding(DefaultParameterSetName='Folders')]
+    param (
+        [Parameter(
+            Mandatory
+            ValueFromPipelineByPropertyName,
+            ParameterSetName="Files")]
+        [Alias('Path')]                         #   alternate properties names
+        [ValidateCount(1,5)]                    #   How many items in the Collection
+        [String[]] $FileName = "*.txt",
+
+        [Parameter(ParameterSetName="Files")]
+        [ValidateRange(0,10)]                   #   Match a number range
+        [int] $count = 2,                       #   or 'Positive', 'Negative', 'NonNegative', 'NonPositive'
+        
+        [Parameter(ParameterSetName="Index")]
+        [ValidatePattern("[0-9][0-9][0-9][0-9]")]   # RegEx Match
+        [String] $IndexNumber,
+
+        [Parameter(ParameterSetName="Files")]
+        [ValidateScript({$_ -ge (Get-Date)})]   #  Any script you want. 
+        [datetime] $after,                      #  matches if NOT $false or Throwing error
+        
+        [Parameter(
+            ValueFromRemainingArguments,
+            ParameterSetName="Folders")]
+        [ValidateNotNullOrEmpty()]              #validates that the string in not $null or an empty string
+        [ValidateLength(1,10)]                  # length of the string
+        [String] $folder
+
+
+    )
+    if ($folder) {
+        Get-ChildItem -Path . -Directory -Filter $folder
+    } else {
+        Get-ChildItem -Path . -File -count $count -Filter $FileName
+
+    }
+}
+```
+
+#!markdown
+
+## Parameter Types
+
+#!markdown
+
+### Standard Types
+
+#!pwsh
+
+function Get-MyFiles {
+    param (
+        [Parameter(ValueFromPipeline=$true)]
+        [string]$Name = "*",
+        [Parameter()]
+        [int] $count = 1
+    )
+    
+    Process {
+        get-Childitem -Path . -Filter $name | Select-Object -First $Count
+    }
+}
+
+#!pwsh
+
+Get-MyFiles
+
+#!pwsh
+
+"*.ps1" | Get-MyFiles
+
+#!pwsh
+
+"*.ps1" | Get-MyFiles -count "four"
+
+#!markdown
+
+> Accept only numbers from the pipeline
+
+#!pwsh
+
+function Get-MyNumFiles {
+    param (
+        [Parameter(ValueFromPipeline=$true)]
+        [int] $count = 1,
+        [Parameter()]
+        [string]$Name = "*"
+    )
+    
+    Process {
+        get-Childitem -Path . -Filter $name | Select-Object -First $Count
+    }
+}
+
+#!pwsh
+
+3 | Get-MyNumFiles
+
+#!pwsh
+
+"*.ps1" | Get-MyNumFiles
+
+#!markdown
+
+### Parameter Type `Switch`
+
+#!pwsh
+
+function Get-Process_w_Switch {
+    param(
+        [Parameter(Mandatory = $true,
+            HelpMessage = "Enter one or more process names separated by commas.")]
+        [String[]]  $ProcName,
+        [Parameter()]
+        [Switch]
+        $NameOnly
+    )
+    
+    begin {
+    }
+    
+    process {
+        $processes = Get-Process -Name $ProcName
+        if ($NameOnly) {
+            $processes | select -ExpandProperty Name
+        } else {
+            $processes
+        }
+
+    }
+    
+    end {
+    }
+}
+
+#!pwsh
+
+Get-Process_w_Switch explorer -NameOnly 
+
+#!pwsh
+
+Get-Process_w_Switch explorer 
+
+#!markdown
+
+> A `[Switch]` conveys a Boolean `$true` or `$false` value when the parameter is present
+> 
+> Used to turn something **on** that is normally **off**
+
+**Exmaple:**
+
+`Get-ChildItem -Recurse` 
+
+The cmdlet will only `Recurse` when the parameter is present (set: **on**)
+
+#!markdown
+
+### Parameter Type `bool`
+
+#!markdown
+
+> A `[bool]` type acts slightly different and would need to be set explicitly
+
+#!pwsh
+
+function Get-Process_w_Bool {
+    param(
+        [Parameter(Mandatory = $true,
+            HelpMessage = "Enter one or more process names separated by commas.")]
+        [String[]]  $ProcName,
+        [Parameter()]
+        [bool]
+        $NameOnly
+    )
+    
+    begin {
+    }
+    
+    process {
+        $processes = Get-Process -Name $ProcName
+        if ($NameOnly) {
+            $processes | select -ExpandProperty Name
+        } else {
+            $processes
+        }
+
+    }
+    
+    end {
+    }
+}
+
+#!pwsh
+
+Get-Process_w_Bool explorer -NameOnly $false
+
+#!markdown
+
+## Splatting
+
+#!markdown
+
+> Splatting allows you to pass parameters to commands, vie a `hastable`
+
+#!pwsh
+
+$ParamHash = @{
+    ProcName = "explorer"
+}
+
+Get-Process_w_Switch @ParamHash
+
+#!pwsh
+
+$ParamHash = @{
+    ProcName = "explorer"
+    NameOnly = $true
+}
+
+Get-Process_w_Switch @ParamHash
+
+#!pwsh
+
+$ParamHash = @{
+    ProcName = "explorer"
+    NameOnly = $false
+}
+
+Get-Process_w_Bool @ParamHash
+
+#!markdown
+
+## Function HELP!
+
+#!markdown
+
+### Use "Comment Based Help" it helps us **ALL**
+
+#!markdown
+
+Microsoft Docs: [about_Comment_Based_Help](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comment_based_help?view=powershell-5.1)
+
+```powershell
+Get-Help about_Comment_Based_Help
+```
+
+```powershell
+<#
+.Synopsis
+   Short Description
+
+.DESCRIPTION
+   Longer Description
+
+.PARAMETER Param1
+    List every parameter and it's purpose
+
+.PARAMETER Param2
+    List every parameter and it's purpose
+
+.EXAMPLE
+   Verb-Noun -Param1 Value
+
+   Show an example of the usage of the function
+
+.EXAMPLE
+   "Value1","value2" | Verb-Noun
+
+   Show as many examples of the usage of the function as possible
+
+.INPUTS
+   What .NET type can be piped into the function
+
+.OUTPUTS
+   What .NET type will be returned from the function
+
+.LINK
+   link to the online version of the help for this function
+
+.NOTES
+    Notes for others to follow 
+#>
+```
+
+#!markdown
+
+## Function Output
+
+#!markdown
+
+> The output is be placed into the pipeline for other cmdlets\functions
+> 
+> The default output of a function goes to the default output stream `Out-Default`
+
+#!pwsh
+
+function Get-myProcess ($name) {
+  Get-Process $name
+}
+
+#!pwsh
+
+Get-myProcess code | export-csv .\out.csv
+.\out.csv
+
+#!markdown
+
+### Note about using the `return` statement
+
+The `return` keyword exits a function, script, or script block. It can be used to exit a scope at a specific point, to return a value, or to indicate that the end of the scope has been reached.
+
+#!pwsh
+
+function MultiplyEven
+{
+    param($number)
+    
+    Write-Output "Current number [ $number ]"
+    if ($number % 2) { return "$number is not even" }
+
+    Write-Output "I ONLY run when not returned  [ $number ]"
+    
+}
+
+1..10 | ForEach-Object {MultiplyEven -Number $_} 
