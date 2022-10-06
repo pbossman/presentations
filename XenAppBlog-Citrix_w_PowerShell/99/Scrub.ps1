@@ -20,7 +20,6 @@ function Scrub-Data {
             $editMachineName = $editMachineName -replace '^[a-zA-Z]{5}', "___"
             $object | Add-Member -MemberType NoteProperty -Name MachineName -Value $editMachineName -Force
             $Object.Message = ($Object.Message -replace '<<CORPDOMAIN>>.com', 'domain.local')
-            $Object.Message = ($Object.Message -replace 'martinarietta.com', 'domain.local')
             $Object.Message = ($Object.Message -replace '<<CORPDOMAIN>>\\', 'domain\\')
             $Object.Message = ($Object.Message -replace '10.100.', 'x.x.')
             $Object.Message = ($Object.Message -replace '192.168.', 'x.x.')
